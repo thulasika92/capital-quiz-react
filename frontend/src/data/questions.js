@@ -1,18 +1,23 @@
 const questions = [
   {
-    question: "What is the capital of France?",
-    options: ["Paris", "Berlin", "Madrid", "Rome"],
+    country: "France",
     answer: "Paris",
+    options: ["Paris", "Berlin", "Madrid", "Rome"],
   },
   {
-    question: "What is the capital of Japan?",
-    options: ["Beijing", "Seoul", "Tokyo", "Bangkok"],
+    country: "Japan",
     answer: "Tokyo",
+    options: ["Tokyo", "Beijing", "Seoul", "Bangkok"],
   },
   {
-    question: "What is the capital of Canada?",
-    options: ["Toronto", "Vancouver", "Ottawa", "Montreal"],
+    country: "Canada",
     answer: "Ottawa",
+    options: ["Toronto", "Vancouver", "Ottawa", "Montreal"],
+  },
+  {
+    country: "Australia",
+    answer: "Canberra",
+    options: ["Sydney", "Melbourne", "Canberra", "Perth"],
   },
 ];
 
