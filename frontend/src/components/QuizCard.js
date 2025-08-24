@@ -59,7 +59,9 @@ export default function QuizCard({ questions }) {
       {/* Header */}
       {!finished && (
         <div className="px-6 py-5 border-b border-gray-200 bg-white">
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">Capital Quiz</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">
+            Question {current + 1} / {quizQuestions.length}
+          </h1>
           <ProgressBar progress={progress} />
         </div>
       )}
