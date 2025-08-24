@@ -1,18 +1,50 @@
+import React, { useState } from "react";
+import QuizCard from "./components/QuizCard";
+import ResultCard from "./components/ResultCard";
+import ProgressBar from "./components/ProgressBar";
+import questions from "./data/questions";
 
-import './App.css';
-import Quiz from './components/Quiz';
+export default function App() {
+  const [current, setCurrent] = useState(0);
+  const [score, setScore] = useState(0);
+  const [finished, setFinished] = useState(false);
 
-function App() {
+  const handleAnswer = (selected) => {
+    if (selected === questions[current].answer) {
+      setScore(score + 1);
+    }
+    if (current + 1 < questions.length) {
+      setCurrent(current + 1);
+    } else {
+      setFinished(true);
+    }
+  };
+
+  const restartQuiz = () => {
+    setScore(0);
+    setCurrent(0);
+    setFinished(false);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-200 to-purple-200 flex items-center justify-center p-4">
-      <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-lg">
-        <h1 className="text-3xl font-bold text-center mb-4 text-blue-600">
-           Capital Quiz
-        </h1>
-        <Quiz/>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div className="w-full max-w-xl bg-white rounded-2xl shadow-lg p-6">
+        {!finished ? (
+          <>
+            <ProgressBar current={current + 1} total={questions.length} />
+            <QuizCard
+              question={questions[current]}
+              handleAnswer={handleAnswer}
+            />
+          </>
+        ) : (
+          <ResultCard
+            score={score}
+            total={questions.length}
+            restartQuiz={restartQuiz}
+          />
+        )}
       </div>
     </div>
   );
 }
-
-export default App;
