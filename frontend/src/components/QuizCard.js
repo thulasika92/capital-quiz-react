@@ -1,12 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProgressBar from "./ProgressBar";
 import ResultCard from "./ResultCard";
 
 export default function QuizCard({ questions }) {
-  // Pick 10 random questions from the pool
-  const [quizQuestions, setQuizQuestions] = useState(() =>
-    questions.sort(() => 0.5 - Math.random()).slice(0, 10)
-  );
+  // Utility: Shuffle array (Fisher-Yates algorithm)
+  const shuffleArray = (array) => {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  };
+
+  // Utility: Pick 10 random questions & shuffle options for each
+  const getRandomQuestions = () => {
+    const randomTen = [...questions].sort(() => 0.5 - Math.random()).slice(0, 10);
+    return randomTen.map((q) => ({
+      ...q,
+      options: shuffleArray(q.options),
+    }));
+  };
+
+  const [quizQuestions, setQuizQuestions] = useState(getRandomQuestions);
   const [current, setCurrent] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState("");
@@ -14,7 +30,9 @@ export default function QuizCard({ questions }) {
 
   const handleAnswer = (option) => {
     setSelected(option);
-    if (option === quizQuestions[current].answer) setScore(score + 1);
+    if (option === quizQuestions[current].answer) {
+      setScore(score + 1);
+    }
 
     setTimeout(() => {
       if (current + 1 < quizQuestions.length) {
@@ -27,8 +45,7 @@ export default function QuizCard({ questions }) {
   };
 
   const restartQuiz = () => {
-    // Pick another 10 random questions
-    setQuizQuestions(questions.sort(() => 0.5 - Math.random()).slice(0, 10));
+    setQuizQuestions(getRandomQuestions());
     setCurrent(0);
     setScore(0);
     setSelected("");
@@ -39,6 +56,7 @@ export default function QuizCard({ questions }) {
 
   return (
     <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-300">
+      {/* Header */}
       {!finished && (
         <div className="px-6 py-5 border-b border-gray-200 bg-white">
           <h1 className="text-2xl font-bold text-gray-900 mb-3">Capital Quiz</h1>
@@ -46,14 +64,17 @@ export default function QuizCard({ questions }) {
         </div>
       )}
 
+      {/* Content */}
       <div className="px-6 py-8 space-y-6">
         {!finished ? (
           <>
+            {/* Question */}
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
               What is the capital of{" "}
               <span className="text-indigo-600">{quizQuestions[current].country}</span>?
             </h2>
 
+            {/* Options */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {quizQuestions[current].options.map((option) => {
                 let base =
@@ -80,7 +101,11 @@ export default function QuizCard({ questions }) {
             </div>
           </>
         ) : (
-          <ResultCard score={score} total={quizQuestions.length} restartQuiz={restartQuiz} />
+          <ResultCard
+            score={score}
+            total={quizQuestions.length}
+            restartQuiz={restartQuiz}
+          />
         )}
       </div>
     </div>
